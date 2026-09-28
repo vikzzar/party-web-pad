@@ -1,0 +1,58 @@
+# Server (.NET / Visual Studio)
+PartyPad.Server/**/[Dd]ebug/
+PartyPad.Server/**/[Dd]ebugPublic/
+PartyPad.Server/**/[Rr]elease/
+PartyPad.Server/**/[Rr]eleasePublic/
+PartyPad.Server/**/x64/
+PartyPad.Server/**/x86/
+PartyPad.Server/**/[Bb]in/
+PartyPad.Server/**/[Oo]bj/
+
+# Client (Node / Vite / React)
+
+# Logs
+Client/**/logs/
+Client/**/*.log
+Client/**/npm-debug.log*
+Client/**/yarn-debug.log*
+Client/**/yarn-error.log*
+Client/**/pnpm-debug.log*
+Client/**/lerna-debug.log*
+
+# Dependencies and build output
+Client/**/node_modules/
+Client/**/dist/
+Client/**/dist-ssr/
+Client/**/*.local
+
+# Secrets and environment variables
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+**/*.pem
+**/*.key
+**/*.secret
+
+# Editor directories and files
+Client/**/.vscode/*
+!Client/**/.vscode/extensions.json
+
+**/.vs/
+**/.idea/
+**/*.user
+**/*.userosscache
+**/*.sln.docstates
+**/*.suo
+**/*.sln.DotSettings.user
+
+Client/**/*.ntvs*
+Client/**/*.njsproj
+Client/**/*.sln
+Client/**/*.sw?
+
+# OS files
+**/Thumbs.db
+**/desktop.ini
+**/.DS_Store
