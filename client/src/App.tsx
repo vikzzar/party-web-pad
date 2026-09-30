@@ -50,34 +50,136 @@ function updatControllerState(previousState: ControllerState, buttonId: ButtonID
   }
 }
 
+async function setToLandscapeMode(): Promise<void> {
+  const isFullScreen : boolean = document.fullscreenElement !== null;
+  const isLandscape : boolean = screen.orientation?.type.startsWith("landscape") ?? false; 
+  
+  try {
+      if(!isFullScreen) {
+        await document.documentElement.requestFullscreen({
+          navigationUI: "hide",
+        });
+      }
+      if(isFullScreen) {
+        await document.exitFullscreen();
+      }
+      if (screen.orientation?.lock) {
+        if(!isLandscape) {
+          await screen.orientation.lock("landscape");
+        }
+        if(isLandscape) {
+          await screen.orientation.lock("portrait");
+        }
+      }
+    } catch (error) {
+      console.log("Fullscreen/orientation not supported:", error);
+    }
+}
+
 function App() {
   const [controllerState, setControllerState] = useState<ControllerState>(initialControllerState);
   //connect();
   return (
     <>
-      <section id="center">
-        {buttons.map((button) => (
-          <button
-            key={button.id}
-            type="button"
-            className="counter"
-            onClick={() => {
-              setControllerState(prevState => updatControllerState(prevState, button.id, !prevState[button.id]))
-            }}
-          >
-            {button.label}
-          </button>
-        ))}
-          
-        
-          
+      <section id="controller-container">
         <button
-          type="button"
-          className="counter"
-          onClick={() => console.log(controllerState)}
+        type="button"
+        className="controller-mode-button"
+        onClick={setToLandscapeMode}
         >
-          show state
+          landscape mode
         </button>
+        <div className = "Bumbers">
+          {/* Left Bumbers */}
+          <div className="Left-Bumbers">
+          {
+            buttons.filter((button) => 
+              button.id === "l1" || 
+              button.id === "l2")
+              .map((button) => (
+                <button
+                key={button.id}
+                type="button"
+                className={`button ${button.id}`}
+                onClick={() => {
+                  setControllerState(prevState => updatControllerState(prevState, button.id, !prevState[button.id]))
+                }}
+                >
+                {button.label}
+                </button>
+              ))
+          }
+          </div>
+          
+          {/* Right Bumbers */}
+          <div className="Right-Bumbers">
+            {
+              buttons.filter((button) => 
+                button.id === "r1" || 
+                button.id === "r2")
+                .map((button) => (
+                  <button
+                  key={button.id}
+                  type="button"
+                  className={`button ${button.id}`}
+                  onClick={() => {
+                    setControllerState(prevState => updatControllerState(prevState, button.id, !prevState[button.id]))
+                  }}
+                  >
+                  {button.label}
+                  </button>
+                ))
+            }
+          </div>
+        </div>
+
+        <div className="Face-Buttons">
+          {/* Directional Buttons */}
+          <div className="Directional-Buttons">
+            {
+              buttons.filter((button) => 
+                button.id === "up" || 
+                button.id === "down" || 
+                button.id === "left" || 
+                button.id === "right")
+                .map((button) => (
+                  <button
+                  key={button.id}
+                  type="button"
+                  className={`button ${button.id}`}
+                  onClick={() => {
+                    setControllerState(prevState => updatControllerState(prevState, button.id, !prevState[button.id]))
+                  }}
+                  >
+                  {button.label}
+                  </button>
+                ))
+            }
+          </div>
+
+          {/* Action Buttons */}
+          <div className="Action-Buttons">
+            {
+              buttons.filter((button) => 
+                button.id === "a" || 
+                button.id === "b" || 
+                button.id === "x" || 
+                button.id === "y")
+                .map((button) => (
+                  <button
+                  key={button.id}
+                  type="button"
+                  className={`button ${button.id}`}
+                  onClick={() => {
+                    setControllerState(prevState => updatControllerState(prevState, button.id, !prevState[button.id]))
+                  }}
+                  >
+                  {button.label}
+                  </button>
+                ))
+            }
+          </div>
+        </div>
       </section>
     </>
   )
