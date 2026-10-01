@@ -78,6 +78,17 @@ async function setToLandscapeMode(): Promise<void> {
 
 function App() {
   const [controllerState, setControllerState] = useState<ControllerState>(initialControllerState);
+  connect();
+
+  function pressButton(buttonId: ButtonID): void {
+    sendMessage(buttonId + " pressed");
+    setControllerState(prevState => updatControllerState(prevState, buttonId, true));
+  }
+
+  function releaseButton(buttonId: ButtonID): void {
+    sendMessage(buttonId + " released");
+    setControllerState(prevState => updatControllerState(prevState, buttonId, false));
+  }
   //connect();
   return (
     <>
@@ -101,8 +112,16 @@ function App() {
                 key={button.id}
                 type="button"
                 className={`button ${button.id}`}
-                onClick={() => {
-                  setControllerState(prevState => updatControllerState(prevState, button.id, !prevState[button.id]))
+                onPointerDown={(event) =>{
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  pressButton(button.id);
+                }}
+                onPointerUp={(event) => {
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  releaseButton(button.id)}
+                }
+                onPointerCancel={() => {
+                  releaseButton(button.id);
                 }}
                 >
                 {button.label}
@@ -122,9 +141,17 @@ function App() {
                   key={button.id}
                   type="button"
                   className={`button ${button.id}`}
-                  onClick={() => {
-                    setControllerState(prevState => updatControllerState(prevState, button.id, !prevState[button.id]))
-                  }}
+                  onPointerDown={(event) =>{
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  pressButton(button.id);
+                }}
+                onPointerUp={(event) => {
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  releaseButton(button.id)}
+                }
+                onPointerCancel={() => {
+                  releaseButton(button.id);
+                }}
                   >
                   {button.label}
                   </button>
@@ -147,9 +174,17 @@ function App() {
                   key={button.id}
                   type="button"
                   className={`button ${button.id}`}
-                  onClick={() => {
-                    setControllerState(prevState => updatControllerState(prevState, button.id, !prevState[button.id]))
-                  }}
+                  onPointerDown={(event) =>{
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  pressButton(button.id);
+                }}
+                onPointerUp={(event) => {
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  releaseButton(button.id)}
+                }
+                onPointerCancel={() => {
+                  releaseButton(button.id);
+                }}
                   >
                   {button.label}
                   </button>
@@ -170,9 +205,17 @@ function App() {
                   key={button.id}
                   type="button"
                   className={`button ${button.id}`}
-                  onClick={() => {
-                    setControllerState(prevState => updatControllerState(prevState, button.id, !prevState[button.id]))
-                  }}
+                  onPointerDown={(event) =>{
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  pressButton(button.id);
+                }}
+                onPointerUp={(event) => {
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  releaseButton(button.id)}
+                }
+                onPointerCancel={() => {
+                  releaseButton(button.id);
+                }}
                   >
                   {button.label}
                   </button>
