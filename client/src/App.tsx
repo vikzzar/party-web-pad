@@ -1,13 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import {connect, disconnect, sendMessage} from "./networking/websocket";
+import nipplejs from 'nipplejs';
 
+//define button, stick and controller state types
 type ButtonID = "a" | "b" | "x" | "y" | "l1" | "r1" | "l2" | "r2" | "l3" | "r3" | "up" | "down" | "left" | "right";
+
+type StickState = {
+  x: number;
+  y: number;
+}
 type Button = {
   id: ButtonID;
   label: string;
   input: string;
 }
+
+
+type ControllerState ={ 
+  buttons: Record<ButtonID, boolean>;
+  leftStick: StickState;
+}
+
+//store button data in an array
 const buttons: Button[] = [
   { id: "a", label: "A", input: "A" },
   { id: "b", label: "B", input: "B" },
@@ -25,28 +40,43 @@ const buttons: Button[] = [
   { id: "right", label: "Right", input: "Right" }
 ];
 
-type ControllerState = Record<ButtonID, boolean>;
 const initialControllerState: ControllerState = {
-  a: false,
-  b: false,
-  x: false,
-  y: false,
-  l1: false,
-  r1: false,
-  l2: false,
-  r2: false,
-  l3: false,
-  r3: false,
-  up: false,
-  down: false,
-  left: false,
-  right: false
+  buttons: {
+    a: false,
+    b: false,
+    x: false,
+    y: false,
+    l1: false,
+    r1: false,
+    l2: false,
+    r2: false,
+    l3: false,
+    r3: false,
+    up: false,
+    down: false,
+    left: false,
+    right: false
+  },
+  leftStick: {
+    x: 0,
+    y: 0
+  }
 };
 
-function updatControllerState(previousState: ControllerState, buttonId: ButtonID, pressed: boolean): ControllerState {
+function updateButtonState(previousState: ControllerState, buttonId: ButtonID, pressed: boolean): ControllerState {
   return {
     ...previousState,
-    [buttonId]: pressed
+    buttons: {
+      ...previousState.buttons,
+      [buttonId]: pressed
+    }
+  }
+}
+
+function updateStickState(previousState: ControllerState, stickState: StickState): ControllerState {
+  return {
+    ...previousState,
+    leftStick: stickState 
   }
 }
 
@@ -78,18 +108,64 @@ async function setToLandscapeMode(): Promise<void> {
 
 function App() {
   const [controllerState, setControllerState] = useState<ControllerState>(initialControllerState);
-  connect();
+  const joystickZoneRef = useRef<HTMLDivElement | null>(null);
+
+  /*useEffect(() => {
+    console.log(
+      "Controller stick:",
+      controllerState.leftStick.x,
+      controllerState.leftStick.y
+    );
+  }, [controllerState]);
+  */
+  useEffect(() => {
+    if(!joystickZoneRef.current){ return; };
+
+      const joystick = nipplejs.create({
+        zone: joystickZoneRef.current,
+        mode: "static",
+        position: {
+          left: "50%",
+          top: "50%"
+        },
+        size: 120,
+        color: "black"
+      });
+
+      joystick.on("move", (event) => {
+        const vector = event.data.vector;
+        const currentLeftStickState : StickState = {
+          x: vector.x,
+          y: vector.y
+        } 
+        setControllerState(prevState => updateStickState(prevState, currentLeftStickState));
+        //console.log(controllerState.leftStick.x, controllerState.leftStick.y);
+      });
+
+      joystick.on("end", () => {
+        setControllerState(prevState => updateStickState(prevState, {x : 0, y : 0}));
+      });
+
+      return () => {
+        joystick.destroy();
+      };
+  }, []);
 
   function pressButton(buttonId: ButtonID): void {
     sendMessage(buttonId + " pressed");
-    setControllerState(prevState => updatControllerState(prevState, buttonId, true));
+    setControllerState(prevState => updateButtonState(prevState, buttonId, true));
   }
 
   function releaseButton(buttonId: ButtonID): void {
     sendMessage(buttonId + " released");
-    setControllerState(prevState => updatControllerState(prevState, buttonId, false));
+    setControllerState(prevState => updateButtonState(prevState, buttonId, false));
   }
-  //connect();
+
+  // connect to the WebSocket server when the component mounts
+  /*useEffect(() => {
+    connect();
+  }, []);
+  */
   return (
     <>
       <section id="controller-container">
@@ -161,37 +237,41 @@ function App() {
         </div>
 
         <div className="Face-Buttons">
-          {/* Directional Buttons */}
-          <div className="Directional-Buttons">
-            {
-              buttons.filter((button) => 
-                button.id === "up" || 
-                button.id === "down" || 
-                button.id === "left" || 
-                button.id === "right")
-                .map((button) => (
-                  <button
-                  key={button.id}
-                  type="button"
-                  className={`button ${button.id}`}
-                  onPointerDown={(event) =>{
-                  event.currentTarget.setPointerCapture(event.pointerId);
-                  pressButton(button.id);
-                }}
-                onPointerUp={(event) => {
-                  event.currentTarget.setPointerCapture(event.pointerId);
-                  releaseButton(button.id)}
-                }
-                onPointerCancel={() => {
-                  releaseButton(button.id);
-                }}
-                  >
-                  {button.label}
-                  </button>
-                ))
-            }
+          {/*directional input*/}
+          <div className="Directional-Input">
+            {/* Directional Buttons */}
+            <div className="Directional-Buttons">
+              {
+                buttons.filter((button) => 
+                  button.id === "up" || 
+                  button.id === "down" || 
+                  button.id === "left" || 
+                  button.id === "right")
+                  .map((button) => (
+                    <button
+                    key={button.id}
+                    type="button"
+                    className={`button ${button.id}`}
+                    onPointerDown={(event) =>{
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                    pressButton(button.id);
+                  }}
+                  onPointerUp={(event) => {
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                    releaseButton(button.id)}
+                  }
+                  onPointerCancel={() => {
+                    releaseButton(button.id);
+                  }}
+                    >
+                    {button.label}
+                    </button>
+                  ))
+              }
+            </div>
+            {/* Joystick */}
+            <div className="Joystick-Zone" ref={joystickZoneRef}></div>
           </div>
-
           {/* Action Buttons */}
           <div className="Action-Buttons">
             {
