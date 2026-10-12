@@ -187,16 +187,22 @@ function App() {
                 <button
                 key={button.id}
                 type="button"
-                className={`button ${button.id}`}
+                className={`button ${button.id} ${
+                  controllerState.buttons[button.id] ? "pressed" : ""
+                }`}
                 onPointerDown={(event) =>{
                   event.currentTarget.setPointerCapture(event.pointerId);
                   pressButton(button.id);
                 }}
                 onPointerUp={(event) => {
-                  event.currentTarget.setPointerCapture(event.pointerId);
+                  event.currentTarget.releasePointerCapture(event.pointerId);
                   releaseButton(button.id)}
                 }
-                onPointerCancel={() => {
+                onPointerCancel={(event) => {
+                  if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                    event.currentTarget.releasePointerCapture(event.pointerId);
+                  }
+
                   releaseButton(button.id);
                 }}
                 >
@@ -216,16 +222,22 @@ function App() {
                   <button
                   key={button.id}
                   type="button"
-                  className={`button ${button.id}`}
+                  className={`button ${button.id} ${
+                    controllerState.buttons[button.id] ? "pressed" : ""
+                  }`}
                   onPointerDown={(event) =>{
                   event.currentTarget.setPointerCapture(event.pointerId);
                   pressButton(button.id);
                 }}
                 onPointerUp={(event) => {
-                  event.currentTarget.setPointerCapture(event.pointerId);
+                  event.currentTarget.releasePointerCapture(event.pointerId);
                   releaseButton(button.id)}
                 }
-                onPointerCancel={() => {
+                onPointerCancel={(event) => {
+                  if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                    event.currentTarget.releasePointerCapture(event.pointerId);
+                  }
+
                   releaseButton(button.id);
                 }}
                   >
@@ -251,16 +263,22 @@ function App() {
                     <button
                     key={button.id}
                     type="button"
-                    className={`button ${button.id}`}
+                    className={`button ${button.id} ${
+                      controllerState.buttons[button.id] ? "pressed" : ""
+                    }`}
                     onPointerDown={(event) =>{
                     event.currentTarget.setPointerCapture(event.pointerId);
                     pressButton(button.id);
                   }}
                   onPointerUp={(event) => {
-                    event.currentTarget.setPointerCapture(event.pointerId);
+                    event.currentTarget.releasePointerCapture(event.pointerId);
                     releaseButton(button.id)}
                   }
-                  onPointerCancel={() => {
+                  onPointerCancel={(event) => {
+                    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                      event.currentTarget.releasePointerCapture(event.pointerId);
+                    }
+
                     releaseButton(button.id);
                   }}
                     >
@@ -284,16 +302,22 @@ function App() {
                   <button
                   key={button.id}
                   type="button"
-                  className={`button ${button.id}`}
+                  className={`button ${button.id} ${
+                    controllerState.buttons[button.id] ? "pressed" : ""
+                  }`}
                   onPointerDown={(event) =>{
                   event.currentTarget.setPointerCapture(event.pointerId);
                   pressButton(button.id);
                 }}
                 onPointerUp={(event) => {
-                  event.currentTarget.setPointerCapture(event.pointerId);
+                  event.currentTarget.releasePointerCapture(event.pointerId);
                   releaseButton(button.id)}
                 }
-                onPointerCancel={() => {
+                onPointerCancel={(event) => {
+                  if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                    event.currentTarget.releasePointerCapture(event.pointerId);
+                  }
+
                   releaseButton(button.id);
                 }}
                   >
