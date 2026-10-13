@@ -110,14 +110,23 @@ function App() {
   const [controllerState, setControllerState] = useState<ControllerState>(initialControllerState);
   const joystickZoneRef = useRef<HTMLDivElement | null>(null);
 
-  /*useEffect(() => {
-    console.log(
-      "Controller stick:",
-      controllerState.leftStick.x,
-      controllerState.leftStick.y
-    );
+  // connect to the WebSocket server when the component mounts
+  useEffect(() => {
+    connect();
+
+    return () => {
+      disconnect();
+    }
+  }, []);
+
+  // send the controller state to the server whenever it changes
+  useEffect(() => {
+    const message = JSON.stringify(controllerState);
+    sendMessage(message);
   }, [controllerState]);
-  */
+  
+
+  // initialize the joystick when the component mounts
   useEffect(() => {
     if(!joystickZoneRef.current){ return; };
 
@@ -152,20 +161,13 @@ function App() {
   }, []);
 
   function pressButton(buttonId: ButtonID): void {
-    sendMessage(buttonId + " pressed");
     setControllerState(prevState => updateButtonState(prevState, buttonId, true));
   }
 
   function releaseButton(buttonId: ButtonID): void {
-    sendMessage(buttonId + " released");
     setControllerState(prevState => updateButtonState(prevState, buttonId, false));
   }
-
-  // connect to the WebSocket server when the component mounts
-  /*useEffect(() => {
-    connect();
-  }, []);
-  */
+  
   return (
     <>
       <section id="controller-container">
