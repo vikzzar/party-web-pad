@@ -1,17 +1,21 @@
 let socket : WebSocket | null = null;
 
 export function connect() {
-    if (!socket) {
-        socket = new WebSocket(`ws://${window.location.hostname}:5150/ws`);
+    if (socket) {
+        return;
     }
 
+    const newSocket = new WebSocket(`ws://${window.location.hostname}:5150/ws`);
+    socket = newSocket;
     
     socket.onopen = () => {
         console.log("WebSocket connection established.");
     };
     socket.onclose = () => {
         console.log("WebSocket connection closed.");
-        socket = null;
+        if(socket === newSocket){
+            socket = null;
+        }
     }
     socket.onmessage = (event) => {
         console.log("Received message:", event.data);
@@ -26,9 +30,10 @@ export function sendMessage(message: string) {
         socket.send(message);
     }
 }
-export function disconnect(){
+export function disconnect() {
     if (socket) {
-        socket.close();
+        const socketToClose = socket;
         socket = null;
+        socketToClose.close();
     }
 }
