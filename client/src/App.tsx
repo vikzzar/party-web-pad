@@ -118,13 +118,13 @@ function App() {
       disconnect();
     }
   }, []);
-
+  //connect();
   // send the controller state to the server whenever it changes
   useEffect(() => {
     const message = JSON.stringify(controllerState);
     sendMessage(message);
+    console.log("Sent message:", message);
   }, [controllerState]);
-  
 
   // initialize the joystick when the component mounts
   useEffect(() => {
