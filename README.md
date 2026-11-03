@@ -10,7 +10,7 @@ The interface provides A/B/X/Y buttons, a D-pad, shoulder buttons, digital trigg
 | --- | --- |
 | Browser client | React 19, TypeScript 6, Vite 8, NippleJS 1, CSS |
 | Server | C#, ASP.NET Core, .NET 10, WebSockets, `System.Text.Json` |
-| Virtual gamepad | `Nefarius.ViGEm.Client` 1.21.256 and the ViGEm Bus Driver on Windows |
+| Virtual gamepad | `Nefarius.ViGEm.Client` 1.21.256 and ViGEmBus Setup 1.22.0 on Windows (end of life) |
 | Tooling | npm with `package-lock.json`, ESLint 10, .NET CLI |
 
 No database or cloud service is used.
@@ -18,7 +18,7 @@ No database or cloud service is used.
 ## Prerequisites
 
 - A **Windows PC** to run the server and virtual controller.
-- The **ViGEm Bus Driver**, installed separately on that PC. NuGet restore installs the client library only; this repository does not include a driver installer or specify a driver version.
+- The **ViGEm Bus Driver**, installed separately on the Windows PC using [ViGEmBus Setup 1.22.0](https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0). This release removes the legacy updater associated with the known security concern. NuGet restore installs only the .NET client library; the driver installer is not included in this repository.
 - **.NET 10 SDK** (the server targets `net10.0`).
 - **Node.js 24 or newer**, with npm, satisfying the locked Vite and ESLint engine requirements.
 - **Git** and a browser with WebSocket and pointer-event support. A touchscreen is useful for playing from a phone.
@@ -26,9 +26,15 @@ No database or cloud service is used.
 
 The commands below use PowerShell. If PowerShell blocks `npm.ps1`, use `npm.cmd` in place of `npm`.
 
+### ViGEmBus end of life
+
+**ViGEmBus is end of life.** ViGEmBus and its client libraries are retired and no longer receive updates. Consequently, future Windows compatibility issues or newly discovered security vulnerabilities may remain unresolved. See the [official end-of-life statement](https://docs.nefarius.at/projects/ViGEm/End-of-Life/).
+
+**The known updater-related concern was addressed in ViGEmBus Setup 1.22.0, which is used for this project.** That release removes the updater that contacted a domain no longer controlled by the maintainer. It does not change the underlying driver; 1.22.0 is the setup release version, separate from the NuGet client library version listed above. When upgrading an older installation, check the [1.22.0 release notes](https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0) for the documented in-place upgrade issue.
+
 ## Installation
 
-Install the prerequisites, including the driver, then clone the repository and restore dependencies:
+Install the prerequisites, including ViGEmBus Setup 1.22.0, then clone the repository and restore dependencies:
 
 ```powershell
 git clone https://github.com/vikzzar/party-web-pad.git
